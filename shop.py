@@ -30,6 +30,21 @@ class My_window:
         self.create_frames()
         self.win.mainloop()
 
+    def update(self,table):
+        for row in table.get_children():
+            table.delete(row)
+
+        self.new_con = sq.connect('shop.db')
+
+        if table == self.table_tov:
+            self.sql = self.new_con.execute(f"SELECT * FROM tovar")
+            for row in self.sql:
+                self.db_name = row[1]
+                self.db_price = row[2]
+                self.table_tov.insert("", tk.END, values=[self.db_name, self.db_price])
+
+        self.new_con.close()
+
     def create_frames(self):
         self.notebook = Notebook()
 
@@ -42,6 +57,7 @@ class My_window:
         self.frame1 = Frame(self.notebook)
         self.frame2 = Frame(self.notebook)
         self.frame3 = Frame(self.notebook)
+
 
         self.frame1.pack(fill=tk.BOTH, expand=True)
         self.frame2.pack(fill=tk.BOTH, expand=True)
@@ -77,7 +93,7 @@ class My_window:
         self.entry_price = tk.Entry(self.frame1, textvariable=self.tovar_price, font='Arial 12')
         self.entry_price.place(x=350, y = 140)
 
-        self.btn_new_tov = tk.Button(self.frame1, text='Добавить новый товар',fg='lightblue')
+        self.btn_new_tov = tk.Button(self.frame1, text='Добавить новый товар',)
         self.btn_new_tov.place(x=600, y=60)
 
         self.btn_delete_tov = tk.Button(self.frame1, text='Удалить товар')
@@ -85,6 +101,8 @@ class My_window:
 
         self.btn_update_tov = tk.Button(self.frame1, text='Изменить товар')
         self.btn_update_tov.place(x=600, y=140)
+
+        self.update(self.table_tov)
 
     def buy(self):
         pass
